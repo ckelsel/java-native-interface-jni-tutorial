@@ -1,6 +1,6 @@
 package InstanceFieldAccess;
 
-public class InstanceFieldAccess {
+public class TestInstanceFieldAccess {
 
 	/**
 	 * @param args
