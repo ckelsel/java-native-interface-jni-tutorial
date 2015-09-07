@@ -1,0 +1,121 @@
+=============
+Environment
+=============
+a) ubuntu 12.04 x64
+b) jdk1.8.0_51
+
+===================
+1) without package
+===================
+
+tree java-native-interface-jni-tutorial/src
+.
+©¸©¤©¤ HelloWorld.java
+
+a)  javac HelloWorld.java -> HelloWorld.class
+
+b)  javah -jni HelloWord  -> HelloWorld.h
+
+c)  implement HelloWord.c
+
+/**
+  *  Copyright (C) 2015 ckelsel@hotmail.com
+  *
+  *  This program is free software: you can redistribute it and/or modify
+  *  it under the terms of the GNU General Public License as published by
+  *  the Free Software Foundation, either version 3 of the License, or
+  *  (at your option) any later version.
+  *
+  *  This program is distributed in the hope that it will be useful,
+  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  *  GNU General Public License for more details.
+  *  
+  *  You should have received a copy of the GNU General Public License
+  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  */
+#include <jni.h>
+#include <stdio.h>
+#include "HelloWorld.h"
+
+JNIEXPORT void JNICALL 
+Java_HelloWorld_print (JNIEnv *env, jobject obj)
+{
+        printf("HelloWorld\n");
+            return;
+}
+
+c) build libHelloWorld.so, we use Makefile
+
+#Makefile
+# your JDK path                                                                 
+JDK_INCLUDE=/home/ckelsel/jdk1.8.0_51/include
+
+# -m32, enable -m32 flag in x64 environment
+INCLUDE_DEPENDS=-I$(JDK_INCLUDE) -I$(JDK_INCLUDE)/linux
+default:
+    gcc -m32 -fpic -shared HelloWorld.c -o libHelloWorld.so $(INCLUDE_DEPENDS)
+
+d) make -> libHelloWorld.so
+
+e) export LD_LIBRARY_PATH=`pwd` java HelloWorld
+
+
+===================
+2) with package
+===================
+java-native-interface-jni-tutorial/src$ tree HelloWorld/
+HelloWorld/
+©¸©¤©¤ TestHelloWorld.java
+
+a) java-native-interface-jni-tutorial/src$ javac HelloWorld/TestHelloWorld.java
+
+b) java-native-interface-jni-tutorial/src$ javah -jni -classpath . HelloWorld.TestHelloWorld
+
+c) java-native-interface-jni-tutorial/src$ mv HelloWorld_TestHelloWorld.h HelloWorld
+
+d) java-native-interface-jni-tutorial/src$ cd HelloWorld
+
+e) java-native-interface-jni-tutorial/src/HelloWorld$ vim HelloWorld_TestHelloWorld.c
+
+/**
+  *  Copyright (C) 2015 ckelsel@hotmail.com
+  *
+  *  This program is free software: you can redistribute it and/or modify
+  *  it under the terms of the GNU General Public License as published by
+  *  the Free Software Foundation, either version 3 of the License, or
+  *  (at your option) any later version.
+  *
+  *  This program is distributed in the hope that it will be useful,
+  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  *  GNU General Public License for more details.
+  *  
+  *  You should have received a copy of the GNU General Public License
+  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  */
+#include <jni.h>
+#include <stdio.h>
+#include "HelloWorld.h"
+
+JNIEXPORT void JNICALL 
+Java_HelloWorld_TestHelloWorld_print (JNIEnv *env, jobject obj)                 
+{
+        printf("HelloWorld\n");
+            return;
+}
+
+f) java-native-interface-jni-tutorial/src/HelloWorld$ vim Makefile
+# your JDK path
+JDK_INCLUDE=/home/ckelse/jdk1.8.0_51/include
+
+# -m32, enable -m32 flag in x64 environment
+INCLUDE_DEPENDS=-I$(JDK_INCLUDE) -I$(JDK_INCLUDE)/linux
+default:
+    gcc -m32 -fpic -shared HelloWorld_TestHelloWorld.c -o libTestHelloWorld.so $(INCLUDE_DEPENDS)
+
+
+g) java-native-interface-jni-tutorial/src/HelloWorld$ make
+
+h) java-native-interface-jni-tutorial/src$ LD_LIBRARY_PATH=`pwd`/HelloWorld java
+HelloWorld.TestHelloWorld
