@@ -1,0 +1,17 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+PROJECT(JNI)
+
+IF(WIN32)
+    IF( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+        MESSAGE("Windows amd64 Platform")
+        INCLUDE_DIRECTORIES("C:\\Program Files\\Java\\jdk1.8.0_25\\include")
+        INCLUDE_DIRECTORIES("C:\\Program Files\\Java\\jdk1.8.0_25\\include\\win32")
+    ELSE( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+        MESSAGE("Windows x86 Platform")
+    ENDIF( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+ELSE(WIN32)
+    MESSAGE("Linux Platform")
+ENDIF(WIN32)
+
+ADD_SUBDIRECTORY(HelloWorld)
+ADD_SUBDIRECTORY(InstanceFieldAccess)
